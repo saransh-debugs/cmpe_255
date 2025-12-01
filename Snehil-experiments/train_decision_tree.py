@@ -3,36 +3,26 @@ import warnings
 # STEP 1 – Import libraries
 import pandas as pd
 import numpy as np
-
 import matplotlib.pyplot as plt
-
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
     confusion_matrix,
     roc_auc_score,
     log_loss,
-    precision_recall_curve,
-    roc_curve,
-    auc
 )
 
 warnings.filterwarnings("ignore")
 
-
-def run_tree_random_forest():
-    print("--- Training Decision Tree & Random Forest ---")
+def run_decision_tree():
+    print("--- Training Decision Tree ---")
 
     # STEP 2 – Load the training dataset
     df = pd.read_csv("cell2celltrain.csv")
 
-    # Quick checks
     print(df.shape)
     print(df.columns)
     df.head()
@@ -44,7 +34,7 @@ def run_tree_random_forest():
         else:
             df[col] = df[col].fillna(df[col].median())
 
-    print(df.isnull().sum().sum())
+    print("Total missing values after imputation:", df.isnull().sum().sum())
 
     # STEP 4 – Encode categorical columns
     encoder = LabelEncoder()
@@ -81,23 +71,15 @@ def run_tree_random_forest():
         stratify=y
     )
 
-    print(X_train.shape, X_val.shape)
+    print("Train / Val shapes:", X_train.shape, X_val.shape)
 
-    # Initialize models
+    # Initialize Decision Tree
     dt = DecisionTreeClassifier(random_state=42)
 
-    rf = RandomForestClassifier(
-        n_estimators=300,
-        random_state=42,
-        n_jobs=-1,
-        class_weight="balanced"
-    )
-
-    # Train models
+    # Train model
     dt.fit(X_train, y_train)
-    rf.fit(X_train, y_train)
 
-    # STEP 7 – Evaluation: numeric metrics
+    # Evaluation: numeric metrics
     def evaluate_model(name, model, X_val, y_val):
         y_pred = model.predict(X_val)
         if hasattr(model, "predict_proba"):
@@ -117,17 +99,8 @@ def run_tree_random_forest():
         return y_pred, y_proba
 
     dt_pred, dt_proba = evaluate_model("Decision Tree", dt, X_val, y_val)
-    rf_pred, rf_proba = evaluate_model("Random Forest", rf, X_val, y_val)
 
-    # Improve churn detection using lower threshold
-    threshold = 0.30
-    rf_pred_low = (rf_proba > threshold).astype(int)
-
-    print("\n=== Random Forest (Lower Threshold) ===")
-    print("Threshold:", threshold)
-    print(confusion_matrix(y_val, rf_pred_low))
-
-    # STEP 8 – Visual 1: Confusion matrices
+    # STEP 8 – Visual 1: Confusion matrix
     def plot_confusion(cm, title):
         fig = plt.figure(figsize=(4, 4))
         plt.imshow(cm, interpolation="nearest")
@@ -143,10 +116,7 @@ def run_tree_random_forest():
         plt.show()
 
     dt_cm = confusion_matrix(y_val, dt_pred)
-    rf_cm_low = confusion_matrix(y_val, rf_pred_low)
-
     plot_confusion(dt_cm, "Decision Tree - Confusion Matrix")
-    plot_confusion(rf_cm_low, "Random Forest - Confusion Matrix")
 
     # STEP 9 – Visual 2: Feature importance
     def plot_feature_importance(model, feature_names, title, top_k=15):
@@ -166,43 +136,13 @@ def run_tree_random_forest():
         plt.show()
 
     plot_feature_importance(dt, X.columns, "Decision Tree - Top 15 Features")
-    plot_feature_importance(rf, X.columns, "Random Forest - Top 15 Features")
-
-    # STEP 10 – ROC & Precision–Recall curves (Random Forest)
-
-    # ROC Curve for Random Forest
-    fpr, tpr, _ = roc_curve(y_val, rf_proba)
-    roc_auc = auc(fpr, tpr)
-
-    fig = plt.figure(figsize=(5, 5))
-    plt.plot(fpr, tpr, label=f"AUC = {roc_auc:.3f}")
-    plt.plot([0, 1], [0, 1], linestyle="--")
-    plt.title("Random Forest - ROC Curve")
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
-    plt.legend(loc="lower right")
-    plt.tight_layout()
-    plt.show()
-
-    # Precision–Recall Curve for Random Forest
-    prec, rec, _ = precision_recall_curve(y_val, rf_proba)
-
-    fig = plt.figure(figsize=(5, 5))
-    plt.plot(rec, prec)
-    plt.title("Random Forest - Precision–Recall Curve")
-    plt.xlabel("Recall")
-    plt.ylabel("Precision")
-    plt.tight_layout()
-    plt.show()
 
     return {
+        "dt_model": dt,
         "dt_pred": dt_pred,
-        "dt_proba": dt_proba,
-        "rf_pred": rf_pred,
-        "rf_proba": rf_proba,
-        "rf_pred_low": rf_pred_low
+        "dt_proba": dt_proba
     }
 
 
 if __name__ == "__main__":
-    run_tree_random_forest()
+    run_decision_tree()
