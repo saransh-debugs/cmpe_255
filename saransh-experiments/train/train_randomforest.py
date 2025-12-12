@@ -1,16 +1,18 @@
 import pandas as pd
 import numpy as np
-from catboost import CatBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, average_precision_score, brier_score_loss, confusion_matrix
+from sklearn.impute import SimpleImputer
 import warnings
 
-warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore")
 
-def run_catboost():
-    print(f"--- Training CatBoost ---")
-    base_dir = 'saransh-experiments/processed_data_folds_strict'
+def run_random_forest():
+    print(f"--- Training Random Forest ---")
+
+    base_dir = "saransh-experiments/processed_data_folds_strict"
     folds = range(1, 6)
-    
+
     auc_scores = []
     pr_scores = []
     brier_scores = []
@@ -25,14 +27,23 @@ def run_catboost():
             X_val = pd.read_csv(f"{base_dir}/fold_{fold}_val_X.csv")
             y_val = pd.read_csv(f"{base_dir}/fold_{fold}_val_y.csv").iloc[:, 0]
 
-            model = CatBoostClassifier(
-                random_state=42, verbose=0, allow_writing_files=False, thread_count=-1
+            # Random Forest handles some missingness but better to be safe if NaNs exist
+            imputer = SimpleImputer(strategy='median')
+            X_train_imp = imputer.fit_transform(X_train)
+            X_val_imp = imputer.transform(X_val)
+
+            rf = RandomForestClassifier(
+                n_estimators=300,
+                max_depth=15,  # Slight regularization
+                class_weight="balanced",
+                random_state=42,
+                n_jobs=-1
             )
-            model.fit(X_train, y_train)
-            
-            y_prob = model.predict_proba(X_val)[:, 1]
+
+            rf.fit(X_train_imp, y_train)
+            y_prob = rf.predict_proba(X_val_imp)[:, 1]
             y_pred = (y_prob >= 0.5).astype(int)
-            
+
             # Metrics
             auc = roc_auc_score(y_val, y_prob)
             pr = average_precision_score(y_val, y_prob)
@@ -46,19 +57,19 @@ def run_catboost():
 
             tn, fp, fn, tp = confusion_matrix(y_val, y_pred).ravel()
             total_tp += tp; total_fp += fp; total_tn += tn; total_fn += fn
-            
+
             auc_scores.append(auc)
             pr_scores.append(pr)
             brier_scores.append(brier)
             recall_top20_scores.append(recall_top20)
-            
+
             print(f"  Fold {fold}: AUC={auc:.4f}, PR={pr:.4f}, Brier={brier:.4f}, Recall@20%={recall_top20:.4f}")
-            
+
         except FileNotFoundError:
-            print(f"  Fold {fold}: Data not found.")
+            print(f"  Fold {fold}: Missing data files.")
 
     if auc_scores:
-        print("\n=== CatBoost Report ===")
+        print("\n=== Random Forest Report ===")
         print(f"ROC-AUC:      {np.mean(auc_scores):.4f} ± {np.std(auc_scores):.4f}")
         print(f"PR-AUC:       {np.mean(pr_scores):.4f} ± {np.std(pr_scores):.4f}")
         print(f"Brier Score:  {np.mean(brier_scores):.4f} ± {np.std(brier_scores):.4f}")
@@ -67,4 +78,4 @@ def run_catboost():
         print(f"[[{total_tn}  {total_fp}]\n [{total_fn}  {total_tp}]]")
 
 if __name__ == "__main__":
-    run_catboost()
+    run_random_forest()

@@ -1,19 +1,22 @@
 import pandas as pd
 import numpy as np
 import lightgbm as lgb
-from sklearn.metrics import roc_auc_score, average_precision_score, recall_score
+from sklearn.metrics import roc_auc_score, average_precision_score, brier_score_loss, confusion_matrix
 import warnings
 
 warnings.filterwarnings('ignore')
 
 def run_lightgbm():
     print(f"--- Training LightGBM ---")
-    # Adjusted path to point to parent directory
     base_dir = 'saransh-experiments/processed_data_folds_strict'
     folds = range(1, 6)
+
     auc_scores = []
     pr_scores = []
-    recall_scores = []
+    brier_scores = []
+    recall_top20_scores = []
+    
+    total_tp, total_fp, total_tn, total_fn = 0, 0, 0, 0
 
     for fold in folds:
         try:
@@ -22,7 +25,6 @@ def run_lightgbm():
             X_val = pd.read_csv(f"{base_dir}/fold_{fold}_val_X.csv")
             y_val = pd.read_csv(f"{base_dir}/fold_{fold}_val_y.csv").iloc[:, 0]
 
-            # LightGBM
             model = lgb.LGBMClassifier(
                 random_state=42,
                 n_jobs=-1,
@@ -31,30 +33,40 @@ def run_lightgbm():
             model.fit(X_train, y_train)
             
             y_prob = model.predict_proba(X_val)[:, 1]
-            y_pred = model.predict(X_val)
+            y_pred = (y_prob >= 0.5).astype(int)
             
+            # Metrics
             auc = roc_auc_score(y_val, y_prob)
             pr = average_precision_score(y_val, y_prob)
-            # Recall at Top 20%
-            sorted_indices = np.argsort(y_prob)[::-1]
-            y_val_sorted = y_val.iloc[sorted_indices].values
+            brier = brier_score_loss(y_val, y_prob)
+            
             k = int(len(y_val) * 0.2)
+            sorted_idx = np.argsort(y_prob)[::-1]
+            top_k_churners = y_val.iloc[sorted_idx[:k]].sum()
             total_churners = y_val.sum()
-            captured_churners = y_val_sorted[:k].sum()
-            recall_top20 = captured_churners / total_churners
+            recall_top20 = top_k_churners / total_churners if total_churners > 0 else 0
+
+            tn, fp, fn, tp = confusion_matrix(y_val, y_pred).ravel()
+            total_tp += tp; total_fp += fp; total_tn += tn; total_fn += fn
             
             auc_scores.append(auc)
             pr_scores.append(pr)
-            recall_scores.append(recall_top20)
-            print(f"  Fold {fold}: AUC={auc:.4f}, PR={pr:.4f}, Recall@Top20%={recall_top20:.4f}")
+            brier_scores.append(brier)
+            recall_top20_scores.append(recall_top20)
+            
+            print(f"  Fold {fold}: AUC={auc:.4f}, PR={pr:.4f}, Brier={brier:.4f}, Recall@20%={recall_top20:.4f}")
             
         except FileNotFoundError:
             print(f"  Fold {fold}: Data not found at {base_dir}")
 
     if auc_scores:
-        print(f"LightGBM Average: AUC={np.mean(auc_scores):.4f}, PR={np.mean(pr_scores):.4f}, Recall={np.mean(recall_scores):.4f}")
-        return np.mean(auc_scores)
-    return 0
+        print("\n=== LightGBM Report ===")
+        print(f"ROC-AUC:      {np.mean(auc_scores):.4f} ± {np.std(auc_scores):.4f}")
+        print(f"PR-AUC:       {np.mean(pr_scores):.4f} ± {np.std(pr_scores):.4f}")
+        print(f"Brier Score:  {np.mean(brier_scores):.4f} ± {np.std(brier_scores):.4f}")
+        print(f"Recall@20%:   {np.mean(recall_top20_scores):.4f} ± {np.std(recall_top20_scores):.4f}")
+        print("\nAggregated Confusion Matrix (Threshold 0.5):")
+        print(f"[[{total_tn}  {total_fp}]\n [{total_fn}  {total_tp}]]")
 
 if __name__ == "__main__":
     run_lightgbm()
