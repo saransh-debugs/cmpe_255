@@ -110,7 +110,7 @@ def run_random_forest():
 
     rf_pred, rf_proba = evaluate_model("Random Forest", rf, X_val, y_val)
 
-    # Improve churn detection using lower threshold (same as your original)
+    # Improve churn detection using lower threshold
     threshold = 0.30
     rf_pred_low = (rf_proba > threshold).astype(int)
 
@@ -118,7 +118,7 @@ def run_random_forest():
     print("Threshold:", threshold)
     print(confusion_matrix(y_val, rf_pred_low))
 
-    # STEP 8 – Visual 1: Confusion matrix (ONLY lower-threshold, like before)
+    # STEP 8 – Visual 1: Confusion matrix
     def plot_confusion(cm, title):
         fig = plt.figure(figsize=(4, 4))
         plt.imshow(cm, interpolation="nearest")
