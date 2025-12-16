@@ -1,0 +1,5 @@
+saransh-experiments/processed_data_folds_strict/
+saransh-experiments/processed_data_folds_permissive/
+saransh-experiments/cell2celltrain.csv
+saransh-experiments/catboost_info/
+__pycache__/
