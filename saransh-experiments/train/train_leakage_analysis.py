@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 import xgboost as xgb
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
+import lightgbm as lgb
+from catboost import CatBoostClassifier
 from sklearn.metrics import roc_auc_score, average_precision_score
 import warnings
 
@@ -43,9 +43,9 @@ def run_experiment(data_dir, setting_name):
             
         # Models to benchmark
         models = {
-            'LogisticRegression': LogisticRegression(max_iter=1000, solver='liblinear'),
-            'RandomForest': RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1),
-            'XGBoost': xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42, n_jobs=-1)
+            'XGBoost': xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42, n_jobs=-1),
+            'LightGBM': lgb.LGBMClassifier(random_state=42, n_jobs=-1, verbose=-1),
+            'CatBoost': CatBoostClassifier(random_state=42, verbose=0, thread_count=-1, allow_writing_files=False)
         }
         
         fold_res = {'Fold': fold}
@@ -63,7 +63,7 @@ def run_experiment(data_dir, setting_name):
     avg_res = df_res.mean(numeric_only=True)
     
     print(f"\n--- Results ({setting_name}) ---")
-    for name in ['LogisticRegression', 'RandomForest', 'XGBoost']:
+    for name in ['XGBoost', 'LightGBM', 'CatBoost']:
         print(f"{name}: ROC-AUC={avg_res[f'{name}_ROC']:.4f}, PR-AUC={avg_res[f'{name}_PR']:.4f}")
         
     return avg_res
@@ -82,7 +82,7 @@ def main():
     print(f"{'Model':<20} | {'View':<12} | {'ROC-AUC':<8} | {'PR-AUC':<8} | {'Lift (ROC)':<10}")
     print("-" * 75)
     
-    for name in ['LogisticRegression', 'RandomForest', 'XGBoost']:
+    for name in ['XGBoost', 'LightGBM', 'CatBoost']:
         roc_strict = res_strict[f'{name}_ROC']
         roc_perm = res_permissive[f'{name}_ROC']
         lift = roc_perm - roc_strict

@@ -3,10 +3,8 @@ echo "=========================================="
 echo "      RUNNING FULL MODEL BENCHMARKS       "
 echo "=========================================="
 
-# Use the specific conda environment python
 PYTHON_CMD="/opt/anaconda3/envs/myenv/bin/python"
 
-# Ensure imports from the current directory work
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
 echo -e "\n--- 1. Logistic Regression (Baseline) ---"

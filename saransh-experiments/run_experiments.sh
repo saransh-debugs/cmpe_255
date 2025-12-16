@@ -1,4 +1,3 @@
-#!/bin/bash
 echo "------------------------------------------"
 echo "STEP 2: Imbalance Handling (SMOTE, Weights)"
 echo "------------------------------------------"
