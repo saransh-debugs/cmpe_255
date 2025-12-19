@@ -1,0 +1,226 @@
+==========================================
+      RUNNING FULL MODEL BENCHMARKS       
+==========================================
+
+--- 1. Logistic Regression (Baseline) ---
+--- Training Logistic Regression (Strict Folds) ---
+  Fold 1: AUC=0.6194, PR=0.3883, Brier=0.2396, Recall@20%=0.2837
+  Fold 2: AUC=0.6154, PR=0.3780, Brier=0.2393, Recall@20%=0.2801
+  Fold 3: AUC=0.6127, PR=0.3777, Brier=0.2390, Recall@20%=0.2777
+  Fold 4: AUC=0.6102, PR=0.3771, Brier=0.2400, Recall@20%=0.2726
+  Fold 5: AUC=0.6137, PR=0.3855, Brier=0.2396, Recall@20%=0.2743
+
+=== Logistic Regression Report ===
+ROC-AUC:      0.6143 ± 0.0031
+PR-AUC:       0.3813 ± 0.0046
+Brier Score:  0.2395 ± 0.0003
+Recall@20%:   0.2777 ± 0.0040
+
+Aggregated Confusion Matrix (Threshold 0.5):
+[[22042  14294]
+ [6511  8200]]
+
+--- 2. Linear SGD (Fast Linear) ---
+--- Training Linear SGD (Calibrated) ---
+  Fold 1: AUC=0.5849, PR=0.3544, Brier=0.2504, Recall@20%=0.2630
+  Fold 2: AUC=0.5835, PR=0.3474, Brier=0.2555, Recall@20%=0.2593
+  Fold 3: AUC=0.5884, PR=0.3518, Brier=0.2482, Recall@20%=0.2583
+  Fold 4: AUC=0.5920, PR=0.3624, Brier=0.2450, Recall@20%=0.2638
+  Fold 5: AUC=0.5966, PR=0.3693, Brier=0.2530, Recall@20%=0.2763
+
+=== Linear SGD Report ===
+ROC-AUC:      0.5891 ± 0.0048
+PR-AUC:       0.3571 ± 0.0078
+Brier Score:  0.2504 ± 0.0036
+Recall@20%:   0.2642 ± 0.0064
+
+Aggregated Confusion Matrix (Threshold 0.5):
+[[21184  15152]
+ [6701  8010]]
+
+--- 3. Random Forest ---
+--- Training Random Forest ---
+  Fold 1: AUC=0.6504, PR=0.4194, Brier=0.2076, Recall@20%=0.3017
+  Fold 2: AUC=0.6435, PR=0.4076, Brier=0.2078, Recall@20%=0.2937
+  Fold 3: AUC=0.6551, PR=0.4252, Brier=0.2058, Recall@20%=0.3165
+  Fold 4: AUC=0.6594, PR=0.4154, Brier=0.2053, Recall@20%=0.2995
+  Fold 5: AUC=0.6499, PR=0.4183, Brier=0.2072, Recall@20%=0.3073
+
+=== Random Forest Report ===
+ROC-AUC:      0.6517 ± 0.0054
+PR-AUC:       0.4172 ± 0.0058
+Brier Score:  0.2067 ± 0.0010
+Recall@20%:   0.3037 ± 0.0077
+
+Aggregated Confusion Matrix (Threshold 0.5):
+[[29885  6451]
+ [9761  4950]]
+
+--- 4. Decision Tree ---
+--- Training Decision Tree ---
+  Fold 1: AUC=0.6165, PR=0.3747, Brier=0.2396, Recall@20%=0.2701
+  Fold 2: AUC=0.6151, PR=0.3720, Brier=0.2373, Recall@20%=0.2726
+  Fold 3: AUC=0.6161, PR=0.3717, Brier=0.2383, Recall@20%=0.2695
+  Fold 4: AUC=0.6263, PR=0.3739, Brier=0.2369, Recall@20%=0.2821
+  Fold 5: AUC=0.6184, PR=0.3731, Brier=0.2389, Recall@20%=0.2825
+
+=== Decision Tree Report ===
+ROC-AUC:      0.6185 ± 0.0040
+PR-AUC:       0.3731 ± 0.0011
+Brier Score:  0.2382 ± 0.0010
+Recall@20%:   0.2754 ± 0.0057
+
+Aggregated Confusion Matrix (Threshold 0.5):
+[[18597  17739]
+ [4949  9762]]
+
+--- 5. XGBoost ---
+--- Training XGBoost ---
+  Fold 1: AUC=0.6468, PR=0.4247, Brier=0.1981, Recall@20%=0.3112
+  Fold 2: AUC=0.6503, PR=0.4257, Brier=0.1974, Recall@20%=0.3086
+  Fold 3: AUC=0.6600, PR=0.4332, Brier=0.1952, Recall@20%=0.3175
+  Fold 4: AUC=0.6645, PR=0.4326, Brier=0.1942, Recall@20%=0.3165
+  Fold 5: AUC=0.6586, PR=0.4279, Brier=0.1963, Recall@20%=0.3137
+
+=== XGBoost Report ===
+ROC-AUC:      0.6560 ± 0.0065
+PR-AUC:       0.4288 ± 0.0035
+Brier Score:  0.1963 ± 0.0014
+Recall@20%:   0.3135 ± 0.0033
+
+Aggregated Confusion Matrix (Threshold 0.5):
+[[33183  3153]
+ [11632  3079]]
+
+--- 6. CatBoost ---
+--- Training CatBoost ---
+  Fold 1: AUC=0.6735, PR=0.4550, Brier=0.1890, Recall@20%=0.3371
+  Fold 2: AUC=0.6700, PR=0.4459, Brier=0.1901, Recall@20%=0.3290
+  Fold 3: AUC=0.6747, PR=0.4502, Brier=0.1892, Recall@20%=0.3413
+  Fold 4: AUC=0.6804, PR=0.4558, Brier=0.1880, Recall@20%=0.3307
+  Fold 5: AUC=0.6713, PR=0.4469, Brier=0.1899, Recall@20%=0.3253
+
+=== CatBoost Report ===
+ROC-AUC:      0.6740 ± 0.0036
+PR-AUC:       0.4508 ± 0.0041
+Brier Score:  0.1893 ± 0.0007
+Recall@20%:   0.3327 ± 0.0057
+
+Aggregated Confusion Matrix (Threshold 0.5):
+[[34444  1892]
+ [12386  2325]]
+
+--- 7. LightGBM ---
+/Users/qwertyiwnl/.matplotlib is not a writable directory
+Matplotlib created a temporary cache directory at /var/folders/b6/_f7_pzfx65l6p80ttw240lq40000gn/T/matplotlib-zws_xoyd because there was an issue with the default path (/Users/qwertyiwnl/.matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+--- Training LightGBM ---
+  Fold 1: AUC=0.6667, PR=0.4465, Brier=0.1901, Recall@20%=0.3279
+  Fold 2: AUC=0.6651, PR=0.4381, Brier=0.1907, Recall@20%=0.3260
+  Fold 3: AUC=0.6669, PR=0.4415, Brier=0.1904, Recall@20%=0.3239
+  Fold 4: AUC=0.6783, PR=0.4483, Brier=0.1885, Recall@20%=0.3283
+  Fold 5: AUC=0.6671, PR=0.4406, Brier=0.1905, Recall@20%=0.3199
+
+=== LightGBM Report ===
+ROC-AUC:      0.6688 ± 0.0048
+PR-AUC:       0.4430 ± 0.0038
+Brier Score:  0.1901 ± 0.0008
+Recall@20%:   0.3252 ± 0.0031
+
+Aggregated Confusion Matrix (Threshold 0.5):
+[[34752  1584]
+ [12733  1978]]
+
+--- 8. Leakage Analysis ---
+
+Running Experiment: STRICT (No Leakage)
+Data Source: processed_data_folds_strict
+  Fold 1 processed.
+  Fold 2 processed.
+  Fold 3 processed.
+  Fold 4 processed.
+  Fold 5 processed.
+
+--- Results (STRICT (No Leakage)) ---
+LogisticRegression: ROC-AUC=0.6139, PR-AUC=0.3816
+RandomForest: ROC-AUC=0.6488, PR-AUC=0.4155
+XGBoost: ROC-AUC=0.6560, PR-AUC=0.4288
+
+Running Experiment: PERMISSIVE (With Leakage)
+Data Source: processed_data_folds_permissive
+  Fold 1 processed.
+  Fold 2 processed.
+  Fold 3 processed.
+  Fold 4 processed.
+  Fold 5 processed.
+
+--- Results (PERMISSIVE (With Leakage)) ---
+LogisticRegression: ROC-AUC=0.6198, PR-AUC=0.3880
+RandomForest: ROC-AUC=0.6536, PR-AUC=0.4227
+XGBoost: ROC-AUC=0.6549, PR-AUC=0.4267
+
+============================================================
+LEAKAGE IMPACT ANALYSIS (Strict vs Permissive)
+============================================================
+Model                | View         | ROC-AUC  | PR-AUC   | Lift (ROC)
+---------------------------------------------------------------------------
+LogisticRegression   | Strict       | 0.6139   | 0.3816   | -
+                     | Permissive   | 0.6198   | 0.3880   | +0.0059
+---------------------------------------------------------------------------
+RandomForest         | Strict       | 0.6488   | 0.4155   | -
+                     | Permissive   | 0.6536   | 0.4227   | +0.0048
+---------------------------------------------------------------------------
+XGBoost              | Strict       | 0.6560   | 0.4288   | -
+                     | Permissive   | 0.6549   | 0.4267   | -0.0011
+---------------------------------------------------------------------------
+
+--- 9. Group Robustness ---
+--- Running Group Robustness (ServiceArea Split) ---
+Loading data from cell2celltrain.csv...
+  Cleaning and Engineering...
+Performing cleaning and feature engineering...
+
+  Starting Group CV Loop...
+  Fold 1: AUC=0.6550, PR=0.4482 (Val Size: 9271)
+  Fold 2: AUC=0.6617, PR=0.4304 (Val Size: 9517)
+  Fold 3: AUC=0.6746, PR=0.4456 (Val Size: 11808)
+  Fold 4: AUC=0.6595, PR=0.4321 (Val Size: 11176)
+  Fold 5: AUC=0.6625, PR=0.4385 (Val Size: 9275)
+
+============================================================
+GROUP ROBUSTNESS RESULTS (Split by ServiceArea)
+============================================================
+Average AUC: 0.6627
+Average PR-AUC: 0.4390
+------------------------------------------------------------
+Comparison to Random Split (Baseline XGBoost ~0.6560):
+Delta: +0.0067
+>> SUCCESS: Model generalizes well across different regions.
+
+--- 10. Imbalance Handling ---
+  File "/opt/anaconda3/envs/myenv/lib/python3.12/site-packages/joblib/externals/loky/backend/context.py", line 249, in _count_physical_cores
+    cpu_count_physical = _count_physical_cores_darwin()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/envs/myenv/lib/python3.12/site-packages/joblib/externals/loky/backend/context.py", line 318, in _count_physical_cores_darwin
+    return int(cpu_info)
+           ^^^^^^^^^^^^^
+--- Running Imbalance Handling Experiment ---
+Processing Fold 1...
+Processing Fold 2...
+Processing Fold 3...
+Processing Fold 4...
+Processing Fold 5...
+
+============================================================
+IMBALANCE STRATEGY RESULTS (Avg over 5 folds)
+============================================================
+Strategy                  | ROC-AUC  | PR-AUC  
+------------------------------------------------------------
+Baseline (Unweighted)     | 0.6560   | 0.4288
+Class Weighted            | 0.6515   | 0.4267
+SMOTE                     | 0.6557   | 0.4281
+SMOTE+Tomek               | 0.6547   | 0.4256
+------------------------------------------------------------
+
+==========================================
+           BENCHMARK COMPLETE             
+==========================================
